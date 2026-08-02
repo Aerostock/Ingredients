@@ -102,11 +102,17 @@ body { font-family:'Inter',-apple-system,sans-serif; background:#f0f2f5; color:#
   #app { padding:12px; }
 }
 
-@media(max-width:480px) {
-  .topbar-brand .brand-name { font-size:15px; letter-spacing:1px; }
+@media(max-width:580px) {
+  .topbar-logo > div { display:none; }
+  .topbar-brand .brand-name { font-size:16px; letter-spacing:2px; }
   .topbar-brand .brand-sub { display:none; }
   .topbar .badge { display:none; }
   .cell-mpn, .cell-ccn { font-size:12px; }
+}
+
+@media(max-width:400px) {
+  .topbar-logo .icon { width:28px; height:28px; border-radius:8px; font-size:18px; }
+  .topbar-brand .brand-name { font-size:14px; letter-spacing:1px; }
 }
 </style>
 </head>
