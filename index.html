@@ -210,7 +210,7 @@ function saveItem(idx) {
 
   if (idx >= 0) params += '&index=' + idx;
 
-  fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: new URLSearchParams(params) })
+  fetch(GOOGLE_SCRIPT_URL + '?' + params)
     .then(function(r) { return r.json(); })
     .then(function(res) {
       if (res.success) {
@@ -236,7 +236,7 @@ function saveItem(idx) {
 function deleteItem(idx) {
   if (!confirm('Supprimer "' + ingredients[idx].designation + '" ?')) return;
 
-  fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: new URLSearchParams('action=delete&index=' + idx) })
+  fetch(GOOGLE_SCRIPT_URL + '?action=delete&index=' + idx)
     .then(function(r) { return r.json(); })
     .then(function(res) {
       if (res.success) {
