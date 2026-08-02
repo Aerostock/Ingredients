@@ -83,12 +83,30 @@ body { font-family:'Inter',-apple-system,sans-serif; background:#f0f2f5; color:#
 .btn-pulse:disabled::after { content:''; position:absolute; inset:0; border-radius:12px; background:rgba(255,255,255,0.3); animation:pulse 1.5s infinite; }
 
 @media(max-width:768px) {
-  .toolbar { padding:16px; }
-  .table-wrap th:nth-child(2), .table-wrap td:nth-child(2) { display:none; }
-  .topbar-brand .brand-name { font-size:20px; letter-spacing:2px; }
-  .topbar-brand .brand-sub { font-size:8px; letter-spacing:2px; }
-  .topbar h1 { font-size:12px; }
-  #app { padding:16px; }
+  .topbar { height:64px; padding:0 12px; }
+  .topbar-logo .icon { width:32px; height:32px; }
+  .topbar-logo > div > div:first-child { font-size:7px !important; letter-spacing:1px !important; }
+  .topbar-brand .brand-name { font-size:18px; letter-spacing:2px; }
+  .topbar-brand .brand-sub { font-size:7px; letter-spacing:1px; }
+  .topbar .badge { font-size:11px; padding:4px 10px; }
+  .toolbar { padding:14px; flex-direction:column; }
+  .toolbar .btn { width:100%; justify-content:center; }
+  .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .table-wrap table { min-width:600px; }
+  .table-wrap th { padding:10px 12px; font-size:10px; }
+  .table-wrap td { padding:10px 12px; font-size:13px; }
+  .modal { max-width:95%; border-radius:16px; }
+  .modal-header { padding:20px 20px 0; }
+  .modal-body { padding:4px 20px 16px; }
+  .modal-footer { padding:0 20px 20px; flex-wrap:wrap; }
+  #app { padding:12px; }
+}
+
+@media(max-width:480px) {
+  .topbar-brand .brand-name { font-size:15px; letter-spacing:1px; }
+  .topbar-brand .brand-sub { display:none; }
+  .topbar .badge { display:none; }
+  .cell-mpn, .cell-ccn { font-size:12px; }
 }
 </style>
 </head>
