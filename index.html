@@ -112,10 +112,10 @@ function filtered() {
   var q = document.getElementById('searchInput').value.toLowerCase();
   return ingredients.filter(function(i) {
     if (!q) return true;
-    return i.designation.toLowerCase().indexOf(q) !== -1 ||
-           i.libelle.toLowerCase().indexOf(q) !== -1 ||
-           i.mpn.toLowerCase().indexOf(q) !== -1 ||
-           i.ccn.toLowerCase().indexOf(q) !== -1;
+    return (String(i.designation)).toLowerCase().indexOf(q) !== -1 ||
+           (String(i.libelle)).toLowerCase().indexOf(q) !== -1 ||
+           (String(i.mpn)).toLowerCase().indexOf(q) !== -1 ||
+           (String(i.ccn)).toLowerCase().indexOf(q) !== -1;
   });
 }
 
