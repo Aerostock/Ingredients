@@ -164,7 +164,7 @@ function render() {
   var hdrs = isIng?['Designation','Libelle effectivite','PN','CCN']:['Designation','PN','CCN','Type avion'];
   var cols = ['designation','col2','col3','col4'];
   document.getElementById('tableHead').innerHTML = '<tr>'+hdrs.map(function(h,i){
-    return '<th onclick="sortBy(''+cols[i]+'')">'+h+'</th>';
+    return '<th onclick="sortBy(\''+cols[i]+'\')">'+h+'</th>';
   }).join('')+'</tr>';
   var q = document.getElementById('searchInput').value.toLowerCase();
   var list = all.filter(function(row){
@@ -182,7 +182,7 @@ function render() {
   if(!list.length){tbody.innerHTML='<tr><td colspan="4"><div class="empty-state">Aucun resultat</div></td></tr>';return;}
   tbody.innerHTML = list.map(function(row){
     return '<tr>'+
-      '<td><span class="cell-click" onclick="openDetail(''+row.id+'')">'+esc(row.designation)+'</span></td>'+
+      '<td><span class="cell-click" onclick="openDetail(\''+row.id+'\')">'+esc(row.designation)+'</span></td>'+
       '<td>'+esc(row.col2)+'</td><td><span class="cell-mpn">'+esc(row.col3)+'</span></td><td><span class="cell-ccn">'+esc(row.col4)+'</span></td></tr>';
   }).join('');
 }
@@ -200,8 +200,8 @@ function openDetail(id){
     '<div class="detail-field"><div class="detail-label">'+labels[1]+'</div><div class="detail-value">'+esc(row.col3)+'</div></div>'+
     '<div class="detail-field"><div class="detail-label">'+labels[2]+'</div><div class="detail-value">'+esc(row.col4)+'</div></div>'+
     '</div><div class="modal-footer">'+
-    '<button class="btn btn-danger" onclick="deleteItem(''+id+'')">Supprimer</button>'+
-    '<button class="btn btn-ghost" onclick="openEdit(''+id+'')">Modifier</button>'+
+    '<button class="btn btn-danger" onclick="deleteItem(\''+id+'\')">Supprimer</button>'+
+    '<button class="btn btn-ghost" onclick="openEdit(\''+id+'\')">Modifier</button>'+
     '<button class="btn btn-ghost" onclick="closeModal()">Fermer</button></div>';
   show('modalOverlay');
 }
@@ -218,7 +218,7 @@ function openEdit(id){
     '<label>'+labels[2]+'</label><input id="e-c4" value="'+esc(row?row.col4:'')+'">'+
     '<div class="error-msg hidden" id="saveError"></div></div><div class="modal-footer">'+
     '<button class="btn btn-ghost" onclick="closeModal()">Annuler</button>'+
-    '<button class="btn btn-success" id="btnSave" onclick="saveItem(''+(id||'')+'')">Enregistrer</button></div>';
+    '<button class="btn btn-success" id="btnSave" onclick="saveItem(\''+(id||'')+'\')">Enregistrer</button></div>';
   show('modalOverlay');
 }
 
