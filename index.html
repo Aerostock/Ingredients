@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Liste des Ingrédients</title>
+<title>AeroStock</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'Inter',-apple-system,sans-serif; background:#f0f2f5; color:#1a1a2e; }
@@ -17,19 +17,23 @@ body { font-family:'Inter',-apple-system,sans-serif; background:#f0f2f5; color:#
 .topbar-brand { position:absolute; left:50%; transform:translateX(-50%); text-align:center; }
 .topbar-brand .brand-name { font-size:26px; font-weight:800; background:linear-gradient(135deg,#e2e8f0,#ffffff,#94a3b8); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; letter-spacing:4px; text-transform:uppercase; }
 .topbar-brand .brand-sub { font-size:10px; font-weight:500; color:rgba(255,255,255,0.35); letter-spacing:3px; text-transform:uppercase; margin-top:-2px; }
-.topbar h1 { font-size:15px; font-weight:500; color:rgba(255,255,255,0.7); letter-spacing:-0.2px; }
 .topbar .badge { background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.8); padding:6px 14px; border-radius:20px; font-size:13px; font-weight:500; backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.08); }
 
 #app { max-width:1200px; margin:0 auto; padding:24px; }
 .status-bar { display:flex; align-items:center; gap:8px; margin-bottom:20px; font-size:13px; color:#64748b; }
-.status-bar .dot { width:8px; height:8px; border-radius:50%; }
+.status-bar .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
 .dot-ok { background:#22c55e; }
 .dot-err { background:#ef4444; }
 .dot-loading { background:#f59e0b; animation:pulse 1.5s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
+.tabs { display:flex; gap:0; margin-bottom:16px; background:#fff; border-radius:14px; padding:4px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+.tab { flex:1; padding:12px 20px; border:none; background:transparent; font-size:14px; font-weight:600; color:#64748b; cursor:pointer; border-radius:11px; transition:all .15s; font-family:'Inter',sans-serif; text-align:center; }
+.tab:hover { color:#334155; background:#f1f5f9; }
+.tab.active { background:#1e3a5f; color:#fff; box-shadow:0 2px 8px rgba(30,58,95,0.3); }
+
 .toolbar { background:#fff; border-radius:16px; padding:20px; box-shadow:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.06); margin-bottom:16px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
-.search-wrapper { flex:1; min-width:280px; position:relative; }
+.search-wrapper { flex:1; min-width:240px; position:relative; }
 .search-wrapper svg { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#94a3b8; pointer-events:none; }
 .search-wrapper input { width:100%; padding:14px 16px 14px 44px; border:2px solid #e2e8f0; border-radius:12px; font-size:15px; font-family:'Inter',sans-serif; outline:none; transition:border .2s,box-shadow .2s; }
 .search-wrapper input:focus { border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,0.1); }
@@ -55,9 +59,9 @@ body { font-family:'Inter',-apple-system,sans-serif; background:#f0f2f5; color:#
 .table-wrap td { padding:14px 20px; font-size:14px; border-bottom:1px solid #f1f5f9; }
 .table-wrap tbody tr { transition:background .1s; }
 .table-wrap tbody tr:hover { background:#f8fafc; }
-.cell-designation { cursor:pointer; color:#1e40af; font-weight:600; transition:color .15s; }
-.cell-designation:hover { color:#2563eb; text-decoration:underline; }
-.cell-mpn { font-family:'SF Mono','Cascadia Code','Consolas',monospace; font-size:13px; color:#6366f1; letter-spacing:0.2px; }
+.cell-click { cursor:pointer; color:#1e40af; font-weight:600; transition:color .15s; }
+.cell-click:hover { color:#2563eb; text-decoration:underline; }
+.cell-code { font-family:'SF Mono','Cascadia Code','Consolas',monospace; font-size:13px; color:#6366f1; letter-spacing:0.2px; }
 .cell-ccn { font-family:'SF Mono','Cascadia Code','Consolas',monospace; font-size:13px; color:#64748b; }
 .empty-state { text-align:center; padding:60px 20px; }
 .empty-state .empty-icon { font-size:48px; margin-bottom:16px; opacity:0.3; }
@@ -78,8 +82,6 @@ body { font-family:'Inter',-apple-system,sans-serif; background:#f0f2f5; color:#
 .detail-field .detail-label { font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
 .detail-field .detail-value { font-size:15px; color:#0f172a; font-weight:500; word-break:break-all; }
 .error-msg { background:#fef2f2; color:#dc2626; padding:10px 14px; border-radius:10px; font-size:13px; margin-top:12px; }
-
-.btn-pulse { position:relative; }
 .btn-pulse:disabled::after { content:''; position:absolute; inset:0; border-radius:12px; background:rgba(255,255,255,0.3); animation:pulse 1.5s infinite; }
 
 @media(max-width:768px) {
@@ -92,7 +94,7 @@ body { font-family:'Inter',-apple-system,sans-serif; background:#f0f2f5; color:#
   .toolbar { padding:14px; flex-direction:column; }
   .toolbar .btn { width:100%; justify-content:center; }
   .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
-  .table-wrap table { min-width:600px; }
+  .table-wrap table { min-width:500px; }
   .table-wrap th { padding:10px 12px; font-size:10px; }
   .table-wrap td { padding:10px 12px; font-size:13px; }
   .modal { max-width:95%; border-radius:16px; }
@@ -101,15 +103,12 @@ body { font-family:'Inter',-apple-system,sans-serif; background:#f0f2f5; color:#
   .modal-footer { padding:0 20px 20px; flex-wrap:wrap; }
   #app { padding:12px; }
 }
-
 @media(max-width:580px) {
   .topbar-logo > div { display:none; }
   .topbar-brand .brand-name { font-size:16px; letter-spacing:2px; }
   .topbar-brand .brand-sub { display:none; }
   .topbar .badge { display:none; }
-  .cell-mpn, .cell-ccn { font-size:12px; }
 }
-
 @media(max-width:400px) {
   .topbar-logo .icon { width:28px; height:28px; border-radius:8px; font-size:18px; }
   .topbar-brand .brand-name { font-size:14px; letter-spacing:1px; }
@@ -126,7 +125,7 @@ body { font-family:'Inter',-apple-system,sans-serif; background:#f0f2f5; color:#
   </div>
   <div class="topbar-brand">
     <div class="brand-name">AeroStock</div>
-    <div class="brand-sub">Catalogue des ingrédients</div>
+    <div class="brand-sub" id="brandSub">Catalogue des ingrédients</div>
   </div>
   <span class="badge" id="totalBadge">--</span>
 </div>
@@ -137,29 +136,27 @@ body { font-family:'Inter',-apple-system,sans-serif; background:#f0f2f5; color:#
     <span id="statusText">Chargement...</span>
   </div>
 
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('ingredients')" id="tabIngredients">Ingrédients</button>
+    <button class="tab" onclick="switchTab('pieces')" id="tabPieces">Pièces récurrentes</button>
+  </div>
+
   <div class="toolbar">
     <div class="search-wrapper">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="searchInput" placeholder="Rechercher par désignation, MPN, CCN..." disabled>
+      <input type="text" id="searchInput" placeholder="Rechercher..." disabled>
     </div>
     <button class="btn btn-primary" id="btnAdd" disabled>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Nouvel ingrédient
+      <span id="btnAddText">Nouvel ingrédient</span>
     </button>
   </div>
 
   <div class="table-wrap">
     <table>
-      <thead>
-        <tr>
-          <th onclick="sortBy('designation')">Désignation <span class="sort-arrow" id="arrow-designation">&#9650;</span></th>
-          <th onclick="sortBy('libelle')">Libellé effectivité <span class="sort-arrow" id="arrow-libelle">&#9650;</span></th>
-          <th onclick="sortBy('mpn')">Prime MPN <span class="sort-arrow" id="arrow-mpn">&#9650;</span></th>
-          <th onclick="sortBy('ccn')">CCN <span class="sort-arrow" id="arrow-ccn">&#9650;</span></th>
-        </tr>
-      </thead>
+      <thead id="tableHead"></thead>
       <tbody id="tableBody">
-        <tr><td colspan="4"><div class="empty-state"><div class="empty-icon">&#128269;</div><p>Chargement des données...</p></div></td></tr>
+        <tr><td><div class="empty-state"><div class="empty-icon">&#128269;</div><p>Chargement des données...</p></div></td></tr>
       </tbody>
     </table>
   </div>
@@ -172,53 +169,81 @@ body { font-family:'Inter',-apple-system,sans-serif; background:#f0f2f5; color:#
 <script>
 var GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwOmWsMVdJG2UDMna6xbxBLV0clNMY5iJYtgyQ9FrSbhM7WgEJaFjrNVz6_AM-Xe695/exec';
 
-var ingredients = [];
+var currentTab = 'ingredients';
+var dataIngredients = [];
+var dataPieces = [];
 var sortField = 'designation';
 var sortDir = 'asc';
 var searchTimeout = null;
 
+// TABS
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById('tab' + (tab === 'ingredients' ? 'Ingredients' : 'Pieces')).classList.add('active');
+  document.getElementById('brandSub').textContent = tab === 'ingredients' ? 'Catalogue des ingrédients' : 'Pièces récurrentes';
+  document.getElementById('btnAddText').textContent = tab === 'ingredients' ? 'Nouvel ingrédient' : 'Nouvelle pièce';
+  document.getElementById('searchInput').value = '';
+  sortField = 'designation';
+  sortDir = 'asc';
+  renderTable();
+}
+
+function currentData() { return currentTab === 'ingredients' ? dataIngredients : dataPieces; }
+
+// STATUS
 function setStatus(text, type) {
   document.getElementById('statusText').textContent = text;
   var dot = document.getElementById('statusDot');
   dot.className = 'dot ' + (type === 'ok' ? 'dot-ok' : type === 'err' ? 'dot-err' : 'dot-loading');
 }
 
-function loadData() {
+// LOAD
+function loadData(forceTab) {
+  var targetTab = forceTab || currentTab;
+  var sheet = targetTab === 'ingredients' ? 'Feuille 1' : 'Pieces';
   setStatus('Chargement...', 'loading');
-  fetch(GOOGLE_SCRIPT_URL)
+  fetch(GOOGLE_SCRIPT_URL + '?sheet=' + encodeURIComponent(sheet))
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      ingredients = data;
-      document.getElementById('totalBadge').textContent = ingredients.length + ' ingrédients';
-      setStatus(ingredients.length + ' ingrédients chargés', 'ok');
+      if (targetTab === 'ingredients') dataIngredients = data;
+      else dataPieces = data;
+      document.getElementById('totalBadge').textContent = dataIngredients.length + ' ingrédients';
       document.getElementById('searchInput').disabled = false;
       document.getElementById('btnAdd').disabled = false;
-      render();
+      setStatus(dataIngredients.length + ' ingrédients, ' + dataPieces.length + ' pièces récurrentes', 'ok');
+      if (currentTab === targetTab) renderTable();
     })
-    .catch(function() {
-      setStatus('Erreur de chargement', 'err');
-    });
+    .catch(function() { setStatus('Erreur de chargement', 'err'); });
 }
 
-function filtered() {
+// RENDER TABLE HEADERS + BODY
+function renderTable() {
+  var data = currentData();
+  var isIng = currentTab === 'ingredients';
+
+  // Headers
+  var headers = isIng
+    ? ['Désignation','Libellé effectivité','Prime MPN','CCN']
+    : ['Désignation','PN','CCN','Type avion'];
+  var fields = isIng
+    ? ['designation','libelle','mpn','ccn']
+    : ['designation','pn','ccn','typeavion'];
+
+  document.getElementById('tableHead').innerHTML = '<tr>' + headers.map(function(h, i) {
+    return '<th onclick="sortBy(\'' + fields[i] + '\')">' + h + ' <span class="sort-arrow" id="arrow-' + fields[i] + '">&#9650;</span></th>';
+  }).join('') + '</tr>';
+
+  // Filter
   var q = document.getElementById('searchInput').value.toLowerCase();
-  return ingredients.filter(function(i) {
+  var list = data.filter(function(i) {
     if (!q) return true;
-    return (i.designation||'').toLowerCase().indexOf(q) !== -1 ||
-           (i.libelle||'').toLowerCase().indexOf(q) !== -1 ||
-           (i.mpn||'').toLowerCase().indexOf(q) !== -1 ||
-           String(i.ccn||'').toLowerCase().indexOf(q) !== -1;
+    return Object.values(i).some(function(v) {
+      return String(v||'').toLowerCase().indexOf(q) !== -1;
+    });
   });
-}
 
-function sortBy(field) {
-  if (sortField === field) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-  else { sortField = field; sortDir = 'asc'; }
-  render();
-}
-
-function render() {
-  var list = filtered();
+  // Sort
   list.sort(function(a,b) {
     var va = (a[sortField] || '').toString().toLowerCase();
     var vb = (b[sortField] || '').toString().toLowerCase();
@@ -231,32 +256,46 @@ function render() {
   var arrow = document.getElementById('arrow-' + sortField);
   if (arrow) { arrow.classList.add('active'); arrow.textContent = sortDir === 'asc' ? '\u25B2' : '\u25BC'; }
 
+  // Body
   var tbody = document.getElementById('tableBody');
   if (list.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><div class="empty-icon">&#128270;</div><p>Aucun résultat</p></div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="' + headers.length + '"><div class="empty-state"><div class="empty-icon">&#128270;</div><p>Aucun résultat</p></div></td></tr>';
     return;
   }
   tbody.innerHTML = list.map(function(i) {
-    var idx = ingredients.indexOf(i);
+    var idx = data.indexOf(i);
     return '<tr>' +
-      '<td><span class="cell-designation" onclick="openDetail(' + idx + ')">' + esc(i.designation) + '</span></td>' +
-      '<td>' + esc(i.libelle) + '</td>' +
-      '<td><span class="cell-mpn">' + esc(i.mpn) + '</span></td>' +
-      '<td><span class="cell-ccn">' + esc(i.ccn) + '</span></td>' +
+      '<td><span class="cell-click" onclick="openDetail(' + idx + ')">' + esc(i[fields[0]]) + '</span></td>' +
+      (isIng
+        ? '<td>' + esc(i.libelle) + '</td><td><span class="cell-code">' + esc(i.mpn) + '</span></td><td><span class="cell-ccn">' + esc(i.ccn) + '</span></td>'
+        : '<td><span class="cell-code">' + esc(i.pn) + '</span></td><td><span class="cell-ccn">' + esc(i.ccn) + '</span></td><td>' + esc(i.typeavion) + '</td>'
+      ) +
       '</tr>';
   }).join('');
 }
 
+function sortBy(field) {
+  if (sortField === field) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  else { sortField = field; sortDir = 'asc'; }
+  renderTable();
+}
+
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+// MODALS
 function openDetail(idx) {
-  var i = ingredients[idx];
+  var data = currentData();
+  var i = data[idx];
+  var isIng = currentTab === 'ingredients';
+
+  var fields = isIng
+    ? [['Libellé effectivité','libelle'],['Prime MPN','mpn'],['CCN','ccn']]
+    : [['PN','pn'],['CCN','ccn'],['Type avion','typeavion']];
+
   document.getElementById('modalBox').innerHTML =
     '<div class="modal-header"><h2>' + esc(i.designation) + '</h2></div>' +
     '<div class="modal-body">' +
-    '<div class="detail-field"><div class="detail-label">Libellé effectivité</div><div class="detail-value">' + esc(i.libelle) + '</div></div>' +
-    '<div class="detail-field"><div class="detail-label">Prime MPN</div><div class="detail-value">' + esc(i.mpn) + '</div></div>' +
-    '<div class="detail-field"><div class="detail-label">CCN</div><div class="detail-value">' + esc(i.ccn) + '</div></div>' +
+    fields.map(function(f) { return '<div class="detail-field"><div class="detail-label">' + f[0] + '</div><div class="detail-value">' + esc(i[f[1]]) + '</div></div>'; }).join('') +
     '</div>' +
     '<div class="modal-footer">' +
     '<button class="btn btn-danger" onclick="deleteItem(' + idx + ')">Supprimer</button>' +
@@ -267,14 +306,18 @@ function openDetail(idx) {
 }
 
 function openEdit(idx) {
-  var i = idx >= 0 ? ingredients[idx] : null;
+  var data = currentData();
+  var i = idx >= 0 ? data[idx] : null;
+  var isIng = currentTab === 'ingredients';
+
+  var fields = isIng
+    ? [['designation','Désignation complète'],['libelle','Libellé effectivité'],['mpn','Prime MPN'],['ccn','CCN']]
+    : [['designation','Désignation'],['pn','PN'],['ccn','CCN'],['typeavion','Type avion']];
+
   document.getElementById('modalBox').innerHTML =
-    '<div class="modal-header"><h2>' + (idx === -1 ? 'Nouvel ingrédient' : 'Modifier') + '</h2></div>' +
+    '<div class="modal-header"><h2>' + (idx === -1 ? (isIng ? 'Nouvel ingrédient' : 'Nouvelle pièce') : 'Modifier') + '</h2></div>' +
     '<div class="modal-body">' +
-    field('designation', 'Désignation complète', i ? i.designation : '') +
-    field('libelle', 'Libellé effectivité', i ? i.libelle : '') +
-    field('mpn', 'Prime MPN', i ? i.mpn : '') +
-    field('ccn', 'CCN', i ? i.ccn : '') +
+    fields.map(function(f) { return '<label for="edit-' + f[0] + '">' + f[1] + '</label><input id="edit-' + f[0] + '" value="' + esc(String(i ? i[f[0]] || '' : '')) + '">'; }).join('') +
     '<div class="error-msg hidden" id="saveError"></div>' +
     '</div>' +
     '<div class="modal-footer">' +
@@ -284,74 +327,70 @@ function openEdit(idx) {
   show('modalOverlay');
 }
 
-function field(id, label, value) {
-  return '<label for="edit-' + id + '">' + label + '</label><input id="edit-' + id + '" value="' + esc(String(value||'')) + '">';
-}
-
 function saveItem(idx) {
   var btn = document.getElementById('btnSave');
   btn.disabled = true;
   btn.textContent = 'Enregistrement...';
+  var isIng = currentTab === 'ingredients';
 
   var designation = document.getElementById('edit-designation').value.trim();
   if (!designation) {
-    showError('La désignation est obligatoire.');
+    var el = document.getElementById('saveError');
+    if (el) { el.textContent = 'La désignation est obligatoire.'; el.classList.remove('hidden'); }
     btn.disabled = false;
     btn.textContent = 'Enregistrer';
     return;
   }
 
   var params = 'action=' + (idx >= 0 ? 'update' : 'add') +
-    '&designation=' + encodeURIComponent(designation) +
-    '&libelle=' + encodeURIComponent(document.getElementById('edit-libelle').value.trim()) +
-    '&mpn=' + encodeURIComponent(document.getElementById('edit-mpn').value.trim()) +
-    '&ccn=' + encodeURIComponent(document.getElementById('edit-ccn').value.trim());
+    '&sheet=' + (isIng ? 'Feuille 1' : 'Pieces') +
+    '&designation=' + encodeURIComponent(designation);
+
+  if (isIng) {
+    params += '&libelle=' + encodeURIComponent(document.getElementById('edit-libelle').value.trim()) +
+              '&mpn=' + encodeURIComponent(document.getElementById('edit-mpn').value.trim()) +
+              '&ccn=' + encodeURIComponent(document.getElementById('edit-ccn').value.trim());
+  } else {
+    params += '&pn=' + encodeURIComponent(document.getElementById('edit-pn').value.trim()) +
+              '&ccn=' + encodeURIComponent(document.getElementById('edit-ccn').value.trim()) +
+              '&typeavion=' + encodeURIComponent(document.getElementById('edit-typeavion').value.trim());
+  }
 
   if (idx >= 0) params += '&index=' + idx;
 
   fetch(GOOGLE_SCRIPT_URL + '?' + params)
     .then(function(r) { return r.json(); })
     .then(function(res) {
-      if (res.success) {
-        closeModal();
-        loadData();
-      } else {
-        showError('Erreur: ' + (res.error || 'inconnue'));
-        btn.disabled = false;
-        btn.textContent = 'Enregistrer';
+      if (res.success) { closeModal(); loadData(); }
+      else {
+        var el = document.getElementById('saveError');
+        if (el) { el.textContent = 'Erreur: ' + (res.error || 'inconnue'); el.classList.remove('hidden'); }
+        btn.disabled = false; btn.textContent = 'Enregistrer';
       }
     })
     .catch(function() {
-      showError('Impossible de contacter le serveur.');
-      btn.disabled = false;
-      btn.textContent = 'Enregistrer';
+      var el = document.getElementById('saveError');
+      if (el) { el.textContent = 'Impossible de contacter le serveur.'; el.classList.remove('hidden'); }
+      btn.disabled = false; btn.textContent = 'Enregistrer';
     });
 }
 
 function deleteItem(idx) {
-  if (!confirm('Supprimer "' + ingredients[idx].designation + '" ?')) return;
-  fetch(GOOGLE_SCRIPT_URL + '?action=delete&index=' + idx)
+  var i = currentData()[idx];
+  if (!confirm('Supprimer "' + i.designation + '" ?')) return;
+  fetch(GOOGLE_SCRIPT_URL + '?action=delete&sheet=' + (currentTab === 'ingredients' ? 'Feuille 1' : 'Pieces') + '&index=' + idx)
     .then(function(r) { return r.json(); })
-    .then(function(res) {
-      if (res.success) { closeModal(); loadData(); }
-    });
+    .then(function(res) { if (res.success) { closeModal(); loadData(); } });
 }
 
 function show(id) { document.getElementById(id).classList.remove('hidden'); }
 function hide(id) { document.getElementById(id).classList.add('hidden'); }
 function closeModal() { hide('modalOverlay'); }
 
-function showError(msg) {
-  var el = document.getElementById('saveError');
-  if (el) { el.textContent = msg; el.classList.remove('hidden'); }
-}
-
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
+document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 document.getElementById('searchInput').addEventListener('input', function() {
   clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(render, 150);
+  searchTimeout = setTimeout(renderTable, 150);
 });
 document.getElementById('btnAdd').addEventListener('click', function() { openEdit(-1); });
 document.addEventListener('keydown', function(e) {
@@ -359,7 +398,12 @@ document.addEventListener('keydown', function(e) {
   if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchInput').focus(); }
 });
 
-loadData();
+document.getElementById('tabIngredients').addEventListener('click', function() { switchTab('ingredients'); });
+document.getElementById('tabPieces').addEventListener('click', function() { switchTab('pieces'); });
+
+// INIT
+loadData('ingredients');
+loadData('pieces');
 </script>
 </body>
 </html>
