@@ -149,7 +149,7 @@ function loadPieces() {
 function render() {
   var all = cur();
   var isIng = currentTab === 'ingredients';
-  var hdrs = isIng ? ['Designation','Libelle effectivite','Prime MPN','CCN'] : ['Designation','PN','CCN','Type avion'];
+  var hdrs = isIng ? ['Designation','Libelle effectivite','PN','CCN'] : ['Designation','PN','CCN','Type avion'];
   var cols = ['designation','col2','col3','col4'];
   document.getElementById('tableHead').innerHTML = '<tr>' + hdrs.map(function(h,i){
     return '<th onclick="sortBy('+JSON.stringify(cols[i])+')">'+h+'</th>';
@@ -184,7 +184,7 @@ function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'
 function openDetail(id) {
   var row = findRow(id); if (!row) return;
   var isIng = currentTab === 'ingredients';
-  var labels = isIng ? ['Libelle effectivite','Prime MPN','CCN'] : ['PN','CCN','Type avion'];
+  var labels = isIng ? ['Libelle effectivite','PN','CCN'] : ['PN','CCN','Type avion'];
   document.getElementById('modalBox').innerHTML =
     '<div class="modal-header"><h2>'+esc(row.designation)+'</h2></div>'+
     '<div class="modal-body">'+
@@ -204,7 +204,7 @@ function openEdit(id) {
   if (currentTab === 'ingredients' && id) return;
   var row = id ? findRow(id) : null;
   var isIng = currentTab === 'ingredients';
-  var labels = isIng ? ['Libelle effectivite','Prime MPN','CCN'] : ['PN','CCN','Type avion'];
+  var labels = isIng ? ['Libelle effectivite','PN','CCN'] : ['PN','CCN','Type avion'];
   document.getElementById('modalBox').innerHTML =
     '<div class="modal-header"><h2>'+(id?'Modifier':'Nouvelle piece')+'</h2></div>'+
     '<div class="modal-body">'+
@@ -253,8 +253,7 @@ document.getElementById('modalOverlay').addEventListener('click', function(e){ i
 document.getElementById('searchInput').addEventListener('input', function(){ clearTimeout(searchTimer); searchTimer = setTimeout(render, 150); });
 document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeModal(); if(e.ctrlKey&&e.key==='f'){ e.preventDefault(); document.getElementById('searchInput').focus(); } });
 
-// Init
-document.getElementById('totalBadge').textContent = INGREDIENTS.length + ' elements';
+document.getElementById('totalBadge').textContent = INGREDIENTS.length + ' element(s)';
 render();
 setTimeout(loadPieces, 300);
 </script>
