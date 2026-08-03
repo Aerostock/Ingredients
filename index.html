@@ -226,9 +226,7 @@ function renderTable() {
   var headers = isIng
     ? ['Désignation','Libellé effectivité','Prime MPN','CCN']
     : ['Désignation','PN','CCN','Type avion'];
-  var fields = isIng
-    ? ['designation','libelle','mpn','ccn']
-    : ['designation','pn','ccn','typeavion'];
+  var fields = ['designation','col2','col3','col4'];
 
   document.getElementById('tableHead').innerHTML = '<tr>' + headers.map(function(h, i) {
     return '<th onclick="sortBy(\'' + fields[i] + '\')">' + h + ' <span class="sort-arrow" id="arrow-' + fields[i] + '">&#9650;</span></th>';
@@ -265,11 +263,10 @@ function renderTable() {
   tbody.innerHTML = list.map(function(i) {
     var idx = data.indexOf(i);
     return '<tr>' +
-      '<td><span class="cell-click" onclick="openDetail(' + idx + ')">' + esc(i[fields[0]]) + '</span></td>' +
-      (isIng
-        ? '<td>' + esc(i.libelle) + '</td><td><span class="cell-code">' + esc(i.mpn) + '</span></td><td><span class="cell-ccn">' + esc(i.ccn) + '</span></td>'
-        : '<td><span class="cell-code">' + esc(i.pn) + '</span></td><td><span class="cell-ccn">' + esc(i.ccn) + '</span></td><td>' + esc(i.typeavion) + '</td>'
-      ) +
+      '<td><span class="cell-click" onclick="openDetail(' + idx + ')">' + esc(i.designation) + '</span></td>' +
+      '<td>' + esc(i.col2) + '</td>' +
+      '<td><span class="cell-code">' + esc(i.col3) + '</span></td>' +
+      '<td><span class="cell-ccn">' + esc(i.col4) + '</span></td>' +
       '</tr>';
   }).join('');
 }
@@ -288,14 +285,16 @@ function openDetail(idx) {
   var i = data[idx];
   var isIng = currentTab === 'ingredients';
 
-  var fields = isIng
-    ? [['Libellé effectivité','libelle'],['Prime MPN','mpn'],['CCN','ccn']]
-    : [['PN','pn'],['CCN','ccn'],['Type avion','typeavion']];
+  var labels = isIng
+    ? ['Libellé effectivité','Prime MPN','CCN']
+    : ['PN','CCN','Type avion'];
 
   document.getElementById('modalBox').innerHTML =
     '<div class="modal-header"><h2>' + esc(i.designation) + '</h2></div>' +
     '<div class="modal-body">' +
-    fields.map(function(f) { return '<div class="detail-field"><div class="detail-label">' + f[0] + '</div><div class="detail-value">' + esc(i[f[1]]) + '</div></div>'; }).join('') +
+    '<div class="detail-field"><div class="detail-label">' + labels[0] + '</div><div class="detail-value">' + esc(i.col2) + '</div></div>' +
+    '<div class="detail-field"><div class="detail-label">' + labels[1] + '</div><div class="detail-value">' + esc(i.col3) + '</div></div>' +
+    '<div class="detail-field"><div class="detail-label">' + labels[2] + '</div><div class="detail-value">' + esc(i.col4) + '</div></div>' +
     '</div>' +
     '<div class="modal-footer">' +
     '<button class="btn btn-danger" onclick="deleteItem(' + idx + ')">Supprimer</button>' +
@@ -310,14 +309,15 @@ function openEdit(idx) {
   var i = idx >= 0 ? data[idx] : null;
   var isIng = currentTab === 'ingredients';
 
-  var fields = isIng
-    ? [['designation','Désignation complète'],['libelle','Libellé effectivité'],['mpn','Prime MPN'],['ccn','CCN']]
-    : [['designation','Désignation'],['pn','PN'],['ccn','CCN'],['typeavion','Type avion']];
+  var editFields = isIng
+    ? [['col2','Libellé effectivité'],['col3','Prime MPN'],['col4','CCN']]
+    : [['col2','PN'],['col3','CCN'],['col4','Type avion']];
 
   document.getElementById('modalBox').innerHTML =
     '<div class="modal-header"><h2>' + (idx === -1 ? (isIng ? 'Nouvel ingrédient' : 'Nouvelle pièce') : 'Modifier') + '</h2></div>' +
     '<div class="modal-body">' +
-    fields.map(function(f) { return '<label for="edit-' + f[0] + '">' + f[1] + '</label><input id="edit-' + f[0] + '" value="' + esc(String(i ? i[f[0]] || '' : '')) + '">'; }).join('') +
+    '<label for="edit-designation">Désignation</label><input id="edit-designation" value="' + esc(String(i ? i.designation || '' : '')) + '">' +
+    editFields.map(function(f) { return '<label for="edit-' + f[0] + '">' + f[1] + '</label><input id="edit-' + f[0] + '" value="' + esc(String(i ? i[f[0]] || '' : '')) + '">'; }).join('') +
     '<div class="error-msg hidden" id="saveError"></div>' +
     '</div>' +
     '<div class="modal-footer">' +
@@ -344,17 +344,10 @@ function saveItem(idx) {
 
   var params = 'action=' + (idx >= 0 ? 'update' : 'add') +
     '&sheet=' + (isIng ? 'Feuille 1' : 'Pieces') +
-    '&designation=' + encodeURIComponent(designation);
-
-  if (isIng) {
-    params += '&libelle=' + encodeURIComponent(document.getElementById('edit-libelle').value.trim()) +
-              '&mpn=' + encodeURIComponent(document.getElementById('edit-mpn').value.trim()) +
-              '&ccn=' + encodeURIComponent(document.getElementById('edit-ccn').value.trim());
-  } else {
-    params += '&pn=' + encodeURIComponent(document.getElementById('edit-pn').value.trim()) +
-              '&ccn=' + encodeURIComponent(document.getElementById('edit-ccn').value.trim()) +
-              '&typeavion=' + encodeURIComponent(document.getElementById('edit-typeavion').value.trim());
-  }
+    '&designation=' + encodeURIComponent(designation) +
+    '&col2=' + encodeURIComponent(document.getElementById('edit-col2').value.trim()) +
+    '&col3=' + encodeURIComponent(document.getElementById('edit-col3').value.trim()) +
+    '&col4=' + encodeURIComponent(document.getElementById('edit-col4').value.trim());
 
   if (idx >= 0) params += '&index=' + idx;
 
