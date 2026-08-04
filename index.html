@@ -104,6 +104,11 @@ td{padding:10px 12px;font-size:13px}
     <button class="tab" id="tabPieces" onclick="switchTab('pieces')">Pieces recurrentes</button>
     <button class="tab" id="tabGalere" onclick="switchTab('galere')">Pieces de la galere</button>
   </div>
+  <div style="display:flex;gap:16px;margin-bottom:12px;font-size:12px;color:#64748b">
+    <span>&#128218; Ingredients: <strong id="countIngredients">0</strong></span>
+    <span>&#128204; Recurrentes: <strong id="countPieces">0</strong></span>
+    <span>&#9888; Galere: <strong id="countGalere">0</strong></span>
+  </div>
   <div class="toolbar">
     <div class="search-wrap">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -151,7 +156,12 @@ function cur() { return tabs[currentTab].data; }
 function curTab() { return tabs[currentTab]; }
 function findRow(id) { var a=cur(); for(var i=0;i<a.length;i++){if(a[i].id===id)return a[i];} return null; }
 function findIdx(id) { var a=cur(); for(var i=0;i<a.length;i++){if(a[i].id===id)return i;} return -1; }
-function updateUI() { document.getElementById("totalBadge").textContent = cur().length + " element(s)"; }
+function updateUI() { 
+  document.getElementById("totalBadge").textContent = cur().length + " element(s)";
+  document.getElementById("countIngredients").textContent = tabs.ingredients.data.length;
+  document.getElementById("countPieces").textContent = tabs.pieces.data.length;
+  document.getElementById("countGalere").textContent = tabs.galere.data.length;
+}
 
 function loadSheet(sheet, cb) {
   fetch(API+"?sheet="+encodeURIComponent(sheet))
