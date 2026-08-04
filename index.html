@@ -130,7 +130,7 @@ var EMBED = [{"designation":"PRODUIT DE PROTECTION","col2":"PRODUITS DIVERS DESH
 var tabs = {
   ingredients: { data: EMBED.slice(), sheet: "Feuille 1", hdrs: ["Designation","Libelle effectivite","PN","CCN"], labels: ["Libelle effectivite","PN","CCN"], title: "Catalogue des ingredients", add: "Nouvel ingredient" },
   pieces:     { data: [], sheet: "Pieces",   hdrs: ["Designation","PN","CCN","Type avion"], labels: ["PN","CCN","Type avion"], title: "Pieces recurrentes", add: "Nouvelle piece" },
-  galere:     { data: [], sheet: "piece galere", hdrs: ["Designation","PN","CCN","Type avion"], labels: ["PN","CCN","Type avion"], title: "Pieces de la galere", add: "Nouvelle piece" }
+  galere:     { data: [], sheet: "piece galere", hdrs: ["Designation","PN","CCN","Type avion","Documentation"], labels: ["PN","CCN","Type avion","Documentation"], title: "Pieces de la galere", add: "Nouvelle piece" }
 };
 var currentTab = "ingredients";
 var sortField = "designation";
@@ -179,11 +179,12 @@ setTimeout(function(){
 function render() {
   var all = cur();
   var t = curTab();
-  var cols = ["designation","col2","col3","col4"];
+  var dataFields = ["designation","col2","col3","col4","col5"];
+  var numCols = t.hdrs.length;
   var hasImg = all.some(function(r){return r.image;});
   var hdrs = hasImg ? t.hdrs.concat(["Photo"]) : t.hdrs;
   document.getElementById("tableHead").innerHTML = "<tr>"+hdrs.map(function(h,i){
-    return i<4?"<th onclick=\"sortBy('"+cols[i]+"')\">"+h+"</th>":"<th>"+h+"</th>";
+    return i<numCols?"<th onclick=\"sortBy('"+dataFields[i]+"')\">"+h+"</th>":"<th>"+h+"</th>";
   }).join("")+"</tr>";
   var q = document.getElementById("searchInput").value.toLowerCase();
   var list = all.filter(function(row){
@@ -196,13 +197,14 @@ function render() {
     if(va<vb)return sortDir==="asc"?-1:1;if(va>vb)return sortDir==="asc"?1:-1;return 0;
   });
   var tbody = document.getElementById("tableBody");
-  if(!list.length){tbody.innerHTML="<tr><td colspan=\""+(hasImg?5:4)+"\"><div class=\"empty-state\">Aucun resultat</div></td></tr>";return;}
+  var totalCols = hasImg ? numCols+1 : numCols;
+  if(!list.length){tbody.innerHTML="<tr><td colspan=\""+totalCols+"\"><div class=\"empty-state\">Aucun resultat</div></td></tr>";return;}
   tbody.innerHTML = list.map(function(row){
-    return "<tr>"+
-      "<td><span class=\"cell-click\" onclick=\"openDetail('"+row.id+"')\">"+esc(row.designation)+"</span></td>"+
-      "<td>"+esc(row.col2)+"</td><td><span class=\"cell-mpn\">"+esc(row.col3)+"</span></td><td><span class=\"cell-ccn\">"+esc(row.col4)+"</span></td>"+
-      (hasImg?"<td>"+(row.image?"<img class=\"cell-img\" src=\""+esc(row.image)+"\" onerror=\"this.style.display='none'\">":"")+"</td>":"")+
-      "</tr>";
+    var cells = "<td><span class=\"cell-click\" onclick=\"openDetail('"+row.id+"')\">"+esc(row.designation)+"</span></td>"+
+      "<td>"+esc(row.col2)+"</td><td><span class=\"cell-mpn\">"+esc(row.col3)+"</span></td><td><span class=\"cell-ccn\">"+esc(row.col4)+"</span></td>";
+    if(numCols>4) cells += "<td>"+esc(row.col5||"")+"</td>";
+    if(hasImg) cells += "<td>"+(row.image?"<img class=\"cell-img\" src=\""+esc(row.image)+"\" onerror=\"this.style.display='none'\">":"")+"</td>";
+    return "<tr>"+cells+"</tr>";
   }).join("");
 }
 
@@ -213,11 +215,12 @@ function openDetail(id){
   var row=findRow(id);if(!row)return;
   var t=curTab();
   var l=t.labels;
-  document.getElementById("modalBox").innerHTML=
-    "<div class=\"modal-header\"><h2>"+esc(row.designation)+"</h2></div><div class=\"modal-body\">"+
-    "<div class=\"detail-field\"><div class=\"detail-label\">"+l[0]+"</div><div class=\"detail-value\">"+esc(row.col2)+"</div></div>"+
+  var detailHtml = "<div class=\"detail-field\"><div class=\"detail-label\">"+l[0]+"</div><div class=\"detail-value\">"+esc(row.col2)+"</div></div>"+
     "<div class=\"detail-field\"><div class=\"detail-label\">"+l[1]+"</div><div class=\"detail-value\">"+esc(row.col3)+"</div></div>"+
-    "<div class=\"detail-field\"><div class=\"detail-label\">"+l[2]+"</div><div class=\"detail-value\">"+esc(row.col4)+"</div></div>"+
+    "<div class=\"detail-field\"><div class=\"detail-label\">"+l[2]+"</div><div class=\"detail-value\">"+esc(row.col4)+"</div></div>";
+  if(l.length>3) detailHtml += "<div class=\"detail-field\"><div class=\"detail-label\">"+l[3]+"</div><div class=\"detail-value\">"+esc(row.col5||"")+"</div></div>";
+  document.getElementById("modalBox").innerHTML=
+    "<div class=\"modal-header\"><h2>"+esc(row.designation)+"</h2></div><div class=\"modal-body\">"+detailHtml+
     (row.image?"<img class=\"detail-img\" src=\""+esc(row.image)+"\" onerror=\"this.style.display='none'\">":"")+
     "</div><div class=\"modal-footer\">"+
     "<button class=\"btn btn-danger\" onclick=\"deleteItem('"+id+"')\">Supprimer</button>"+
@@ -237,6 +240,7 @@ function openEdit(id){
     "<label>"+l[0]+"</label><input type=\"text\" id=\"e-c2\" value=\""+esc(row?row.col2:"")+"\">"+
     "<label>"+l[1]+"</label><input type=\"text\" id=\"e-c3\" value=\""+esc(row?row.col3:"")+"\">"+
     "<label>"+l[2]+"</label><input type=\"text\" id=\"e-c4\" value=\""+esc(row?row.col4:"")+"\">"+
+    (l.length>3?"<label>"+l[3]+"</label><input type=\"text\" id=\"e-c5\" value=\""+esc(row?row.col5:"")+"\">":"")+
     "<label>Photo</label><input type=\"file\" id=\"e-img\" accept=\"image/*\" onchange=\"previewImage(this)\">"+
     (pendingImage?"<img class=\"thumb-preview\" id=\"imgPreview\" src=\""+esc(pendingImage)+"\">":"<img class=\"thumb-preview hidden\" id=\"imgPreview\">")+
     "<div class=\"error-msg hidden\" id=\"saveError\"></div></div><div class=\"modal-footer\">"+
@@ -277,6 +281,7 @@ function saveItem(id){
     "&col2="+encodeURIComponent(document.getElementById("e-c2").value.trim())+
     "&col3="+encodeURIComponent(document.getElementById("e-c3").value.trim())+
     "&col4="+encodeURIComponent(document.getElementById("e-c4").value.trim());
+  if(t.labels.length>3) params += "&col5="+encodeURIComponent((document.getElementById("e-c5")||{value:""}).value.trim());
   if(id) params += "&id="+encodeURIComponent(id);
   if(pendingImage) params += "&image="+encodeURIComponent(pendingImage);
 
@@ -285,7 +290,7 @@ function saveItem(id){
 
   fetch(url, fetchOpts || {}).then(function(r){return r.json()}).then(function(res){
     if(res.success){
-      if(id){var idx=findIdx(id);if(idx>=0)cur()[idx]={designation:d,col2:document.getElementById("e-c2").value.trim(),col3:document.getElementById("e-c3").value.trim(),col4:document.getElementById("e-c4").value.trim(),id:id,image:pendingImage};}
+      if(id){var idx=findIdx(id);if(idx>=0)cur()[idx]={designation:d,col2:document.getElementById("e-c2").value.trim(),col3:document.getElementById("e-c3").value.trim(),col4:document.getElementById("e-c4").value.trim(),id:id,image:pendingImage,col5:(document.getElementById("e-c5")||{value:""}).value.trim()};}
       closeModal();updateUI();render();
       setTimeout(function(){loadSheet(t.sheet,function(d){tabs[currentTab].data=d;if(currentTab===currentTab){updateUI();render();}});},500);
     }else{err("Erreur: "+(res.error||"inconnue"));btn.disabled=false;btn.textContent="Enregistrer";}
