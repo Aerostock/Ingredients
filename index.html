@@ -125,7 +125,7 @@ var EMBED = [{"designation":"PRODUIT DE PROTECTION","col2":"PRODUITS DIVERS DESH
 var tabs = {
   ingredients: { data: EMBED.slice(), sheet: "Feuille 1", hdrs: ["Designation","Libelle effectivite","PN","CCN"], labels: ["Libelle effectivite","PN","CCN"], title: "Catalogue des ingredients", add: "Nouvel ingredient" },
   pieces:     { data: [], sheet: "Pieces",   hdrs: ["Designation","PN","CCN","Type avion"], labels: ["PN","CCN","Type avion"], title: "Pieces recurrentes", add: "Nouvelle piece" },
-  galere:     { data: [], sheet: "piece galere", hdrs: ["Designation","PN","CCN","Type avion"], labels: ["PN","CCN","Type avion"], title: "Pieces de la galére", add: "Nouvelle piece" }
+  galere:     { data: [], sheet: "piece galere", hdrs: ["Designation","PN","CCN","Type avion"], labels: ["PN","CCN","Type avion"], title: "Pieces de la galere", add: "Nouvelle piece" }
 };
 var currentTab = "ingredients";
 var sortField = "designation";
@@ -282,8 +282,12 @@ function saveItem(id){
   }).catch(function(){err("Serveur inaccessible");btn.disabled=false;btn.textContent="Enregistrer";});
 }
 
+var PIN = "4172";
+
 function deleteItem(id){
   var row=findRow(id);if(!row)return;
+  var p = prompt("Code PIN pour supprimer :");
+  if (p !== PIN) { alert("Code PIN incorrect."); return; }
   if(!confirm("Supprimer \""+row.designation+"\" ?"))return;
   var t=curTab();
   var idx=findIdx(id);
