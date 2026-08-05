@@ -118,6 +118,7 @@ td{padding:10px 12px;font-size:13px}
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       <span id="btnAddText">Nouvel ingredient</span>
     </button>
+    <button class="btn btn-ghost" onclick="showPending()" title="Admin">&#9881; Valider</button>
   </div>
   <div class="table-wrap">
     <table><thead id="tableHead"></thead><tbody id="tableBody"></tbody></table>
@@ -314,6 +315,35 @@ function deleteItem(id){
         setTimeout(function(){loadSheet(t.sheet,function(d){tabs[currentTab].data=d;if(currentTab===currentTab){updateUI();render();}});},500);
       }
     }).catch(function(){});
+}
+
+function showPending(){
+  var p = prompt("Code PIN administrateur :");
+  if (p !== PIN) { alert("Code PIN incorrect."); return; }
+  document.getElementById("modalBox").innerHTML = '<div class="modal-header"><h2>En attente de validation</h2></div><div class="modal-body"><span id="pendingList">Chargement...</span></div><div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal()">Fermer</button></div>';
+  show("modalOverlay");
+  // Load pending from all sheets
+  var sheets = ["Feuille 1","Pieces","piece galere"];
+  var promises = sheets.map(function(s){
+    return fetch(API+"?action=pending&sheet="+encodeURIComponent(s)).then(function(r){return r.json()}).then(function(d){return {sheet:s,items:Array.isArray(d)?d:[]}});
+  });
+  Promise.all(promises).then(function(results){
+    var html = "";
+    results.forEach(function(r){
+      r.items.forEach(function(item){
+        html += "<div class=\"detail-field\" style=\"display:flex;justify-content:space-between;align-items:center\"><div><strong>"+esc(item.designation)+"</strong><br><span style=\"font-size:11px;color:#94a3b8\">"+esc(r.sheet)+"</span></div><button class=\"btn btn-success\" style=\"padding:6px 14px;font-size:12px\" onclick=\"validateItem('"+r.sheet+"','"+item.id+"')\">Valider</button></div>";
+      });
+    });
+    document.getElementById("pendingList").innerHTML = html || "Aucun element en attente.";
+  }).catch(function(){ document.getElementById("pendingList").innerHTML = "Erreur chargement."; });
+}
+
+function validateItem(sheet, id){
+  fetch(API+"?action=valider&sheet="+encodeURIComponent(sheet)+"&id="+encodeURIComponent(id))
+    .then(function(r){return r.json()})
+    .then(function(res){
+      if(res.success){ showPending(); }
+    });
 }
 
 function err(m){var e=document.getElementById("saveError");if(e){e.textContent=m;e.classList.remove("hidden")}}
